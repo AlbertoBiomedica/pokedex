@@ -1,6 +1,11 @@
 const contenedorPokemons = document.getElementById("contenedorPokemons");
 const previous = document.querySelector("#previous");
 const next = document.querySelector("#next");
+const searchP = document.getElementById("searchP");
+const datoP = document.getElementById("datoP");
+const resetP = document.getElementById("resetP");
+const formSearchP = document.getElementById("formSearchP");
+const btnNavegacion = document.getElementById("btnNavegacion");
 
 let limit = 11;
 let offset = 1;
@@ -20,11 +25,26 @@ next.addEventListener("click", () => {
 });
 
 function traerPokemones(id) {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+
+    console.log(Number.isInteger(id));
+
+    if(Number.isInteger(id)){
+        fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
         .then((respuesta) => respuesta.json())
         .then((datos) => {
             crearCardPokemon(datos)
         });
+    }else{
+
+        fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+        .then((respuesta) => respuesta.json())
+        .then((datos) => {
+            crearCardPokemon(datos)
+        });
+    }
+
+
+    
 }
 
 function traerPokemon(id) {
@@ -43,6 +63,8 @@ function grupoPokemons(offset, limit) {
 }
 
 function crearCardPokemon(pokemon) {
+
+
     let naturalezaPokemon = [];
     let tipo;
     for (i = 0; i < pokemon.types.length; i++) {
@@ -290,3 +312,25 @@ function removeChildNodes(parent) {
         parent.removeChild(parent.firstChild);
     }
 }
+
+searchP.addEventListener("click", (event) => {
+    event.preventDefault();
+    console.log(datoP.value)
+
+
+    const pokemon = traerPokemon(datoP.value.toLowerCase());
+    pokemon.then(datos => {
+        removeChildNodes(contenedorPokemons)
+        crearCardPokemon(datos);
+        btnNavegacion.style.display = "none";
+        formSearchP.reset();
+    });
+
+})
+
+resetP.addEventListener("click", (event) => {
+    event.preventDefault();
+    removeChildNodes(contenedorPokemons);
+    grupoPokemons(offset,limit);
+    btnNavegacion.style.display = "block";
+})

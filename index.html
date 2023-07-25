@@ -52,13 +52,16 @@
 
                     <!-- Topbar Search -->
                     <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" id="formSearchP">
                         <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar pokemon"
+                            <input id="datoP" type="text" class="form-control bg-light border-0 small" placeholder="Buscar pokemon"
                                 aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
+                                <button id="searchP" class="btn btn-primary" type="button">
                                     <i class="fas fa-search fa-sm"></i>
+                                </button>
+                                <button id="resetP" class="btn btn-warning" type="button">
+                                    <i class="fa-solid fa-rotate"></i>
                                 </button>
                             </div>
                         </div>
@@ -101,7 +104,7 @@
                     <div class="contenedorCardPokemons" id="contenedorPokemons">
                         
                     </div>
-                    <nav class="pagination" aria-label="...">
+                    <nav id="btnNavegacion" class="pagination" aria-label="...">
                         <ul class="pagination">
                             <li class="page-item" id="previous">
                                 <a class="page-link" href="#" tabindex="-1">Anterior</a>
