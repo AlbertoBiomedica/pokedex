@@ -7,6 +7,7 @@ const resetP = document.getElementById("resetP");
 const formSearchP = document.getElementById("formSearchP");
 const btnNavegacion = document.getElementById("btnNavegacion");
 
+
 let limit = 11;
 let offset = 1;
 
@@ -24,35 +25,32 @@ next.addEventListener("click", () => {
     grupoPokemons(offset, limit);
 });
 
-function traerPokemones(id) {
+function traerPokemones(dato) {
 
-    console.log(Number.isInteger(id));
+    if (Number.isInteger(dato)) {
+        fetch(`https://pokeapi.co/api/v2/pokemon/${dato}/`)
+            .then((respuesta) => respuesta.json())
+            .then((datos) => {
+                crearCardPokemon(datos)
+            });
+    } else {
 
-    if(Number.isInteger(id)){
-        fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-        .then((respuesta) => respuesta.json())
-        .then((datos) => {
-            crearCardPokemon(datos)
-        });
-    }else{
+        fetch(`https://pokeapi.co/api/v2/pokemon/${dato}/`)
+            .then((respuesta) => respuesta.json())
+            .then((datos) => {
+                crearCardPokemon(datos)
+            });
 
-        fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
-        .then((respuesta) => respuesta.json())
-        .then((datos) => {
-            crearCardPokemon(datos)
-        });
+
     }
 
-
-    
 }
 
-function traerPokemon(id) {
+function traerPokemon(dato) {
     const pokemon =
-        fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
+        fetch(`https://pokeapi.co/api/v2/pokemon/${dato}/`)
             .then((respuesta) => respuesta.json())
             .then((datos) => datos);
-
     return pokemon;
 }
 
@@ -117,7 +115,7 @@ function tipoPokemon(tipo) {
     let color;
     switch (tipo) {
         case "grass":
-            tipo = "Hierva";
+            tipo = "Hierba";
             color = "4A9681";
             break;
         case "fairy":
@@ -181,8 +179,20 @@ function tipoPokemon(tipo) {
             color = "1D8A99";
             break
         case "fighting":
-            tipo = "Metal";
+            tipo = "Pelea";
             color = "2F2F2F";
+            break
+        case "dark":
+            tipo = "Oscuro";
+            color = "000000";
+            break
+        case "shadow":
+            tipo = "Sombra";
+            color = "C0C0C0";
+            break
+        case "unknown":
+            tipo = "Desconocido";
+            color = "2A1A1F";
             break
         default:
             tipo = "No encontrado";
@@ -200,10 +210,14 @@ function desplegarDatoPokemon(dato) {
     const naturalezaP = document.getElementById("naturalezaP");
     const estadistica1 = document.getElementById("estadistica1");
     const estadistica2 = document.getElementById("estadistica2");
+    const habilidadP = document.getElementById("habilidadP");
+    const movimientoP = document.getElementById("movimientoP");
+
 
     naturalezaP.innerHTML = "";
     estadistica1.innerHTML = "";
     estadistica2.innerHTML = "";
+    habilidadP.innerHTML = "";
     namePokemon.style.textTransform = "uppercase";
     namePokemon.style.fontWeight = "bold";
     imgPokemon.style.width = "12rem";
@@ -276,6 +290,24 @@ function desplegarDatoPokemon(dato) {
             estadistica2.appendChild(stat2);
         }
 
+        for (let i = 0; i < datos.abilities.length; i++) {
+            const habilidadPU = document.createElement("div");
+            habilidadPU.innerHTML = `
+            
+            <p>${datos.abilities[i].ability.name}</p>
+            `;
+            habilidadP.appendChild(habilidadPU);
+        }
+
+        for (let i = 0; i <= 5; i++) {
+            const movimientoPU = document.createElement("div");
+            movimientoPU.innerHTML = `
+            <p>${datos.moves[i].move.name}</p>
+            `;
+            movimientoP.appendChild(movimientoPU);
+        }
+
+
     });
 
 }
@@ -316,21 +348,134 @@ function removeChildNodes(parent) {
 searchP.addEventListener("click", (event) => {
     event.preventDefault();
     console.log(datoP.value)
+    const busquedaP = datoP.value.toLowerCase();
 
-
-    const pokemon = traerPokemon(datoP.value.toLowerCase());
-    pokemon.then(datos => {
-        removeChildNodes(contenedorPokemons)
-        crearCardPokemon(datos);
-        btnNavegacion.style.display = "none";
-        formSearchP.reset();
-    });
+    switch (busquedaP) {
+        case "hierba":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "grass");
+            break;
+        case "hada":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "fairy");
+            break;
+        case "fuego":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "fire");
+            break;
+        case "agua":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "water");
+            break
+        case "insecto":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "bug");
+            break;
+        case "veneno":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "poison");
+            break;
+        case "volador":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "flying");
+            break
+        case "electrico":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "electric");
+            break
+        case "normal":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "normal");
+            break
+        case "hielo":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "ice");
+            break
+        case "roca":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "rock");
+            break
+        case "psiquico":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "psychic");
+            break
+        case "fantasma":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "ghost");
+            break
+        case "tierra":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "ground");
+            break
+        case "dragon":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "dragon");
+            break
+        case "metal":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "steel");
+            break
+        case "pelea":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "fighting");
+            break
+        case "oscuro":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "dark");
+            break
+        case "sombra":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "shadow");
+            break
+        case "desconocido":
+            removeChildNodes(contenedorPokemons);
+            filtradoTipos(1010, "unknown");
+            break
+        default:
+            const pokemon = traerPokemon(busquedaP);
+            console.log(pokemon)
+            pokemon.then(datos => {
+                removeChildNodes(contenedorPokemons)
+                crearCardPokemon(datos);
+                btnNavegacion.style.display = "none";
+                formSearchP.reset();
+            });
+            break;
+    }
 
 })
+
+function filtradoTipos(limite, tipo) {
+    let pokemones = [];
+    for (let i = 1; i <= limite; i++) {
+        pokemones.push(traerPokemon(i).then(dato => {
+            return dato;
+        }))
+    }
+
+    for (let i = 0; i < pokemones.length; i++) {
+        pokemones[i].then((dato) => {
+            console.log(dato.types[0].type.name)
+            for (let j = 0; j < dato.types.length; j++) {
+                if (dato.types[j].type.name === tipo) {
+                    crearCardPokemon(dato);
+                    btnNavegacion.style.display = "none";
+                    formSearchP.reset();
+                }
+            }
+        })
+    }
+}
 
 resetP.addEventListener("click", (event) => {
     event.preventDefault();
     removeChildNodes(contenedorPokemons);
-    grupoPokemons(offset,limit);
+    grupoPokemons(offset, limit);
     btnNavegacion.style.display = "block";
 })
+
+
+{/* <div>
+    <p>Bomba fuego</p>
+    <p>Rayo solar</p>
+</div> */}
