@@ -1,3 +1,4 @@
+// Declaración de variables
 const contenedorPokemons = document.getElementById("contenedorPokemons");
 const previous = document.querySelector("#previous");
 const next = document.querySelector("#next");
@@ -11,6 +12,9 @@ const btnNavegacion = document.getElementById("btnNavegacion");
 let limit = 11;
 let offset = 1;
 
+
+// Paginación
+// ******************************************************
 previous.addEventListener("click", () => {
     if (offset != 1) {
         offset -= 12;
@@ -24,7 +28,10 @@ next.addEventListener("click", () => {
     removeChildNodes(contenedorPokemons);
     grupoPokemons(offset, limit);
 });
+// ****************************************************
 
+// Funciones para traer los pokemones 
+// ************************************************************************
 function traerPokemones(dato) {
 
     if (Number.isInteger(dato)) {
@@ -32,13 +39,19 @@ function traerPokemones(dato) {
             .then((respuesta) => respuesta.json())
             .then((datos) => {
                 crearCardPokemon(datos)
-            });
+            }).catch((error) => {
+                console.log(error)
+            })
+            ;
     } else {
 
         fetch(`https://pokeapi.co/api/v2/pokemon/${dato}/`)
             .then((respuesta) => respuesta.json())
             .then((datos) => {
                 crearCardPokemon(datos)
+            })
+            .catch((error) => {
+                console.log(error);
             });
 
 
@@ -59,7 +72,9 @@ function grupoPokemons(offset, limit) {
         traerPokemones(i);
     }
 }
-
+// *************************************************************************
+// Crear las card de cada pokemon
+// ************************************************************************
 function crearCardPokemon(pokemon) {
 
 
@@ -110,7 +125,8 @@ function crearCardPokemon(pokemon) {
     });
 
 }
-
+// ************************************************************************
+// Funcion para clasificar los pokemones por su naturaleza
 function tipoPokemon(tipo) {
     let color;
     switch (tipo) {
@@ -201,8 +217,8 @@ function tipoPokemon(tipo) {
     }
     return { tipo_: tipo, color_: color };
 }
-grupoPokemons(offset, limit)
-
+// ********************************************************
+// Funcion para desplegar los datos en el modal
 function desplegarDatoPokemon(dato) {
     const idPokemon = document.getElementById("idPokemon");
     const namePokemon = document.getElementById("namePokemon");
@@ -338,13 +354,39 @@ function nombrarEstadisticas(dato) {
     }
     return dato;
 }
-
+// *******************************************************
 function removeChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
 }
 
+// Funcion para filtra los pokemones por filtros determinados
+// **********************************************************
+function filtradoTipos(limite, tipo) {
+    let pokemones = [];
+    for (let i = 1; i <= limite; i++) {
+        pokemones.push(traerPokemon(i).then(dato => {
+            return dato;
+        }))
+    }
+
+    for (let i = 0; i < pokemones.length; i++) {
+        pokemones[i].then((dato) => {
+            console.log(dato.types[0].type.name)
+            for (let j = 0; j < dato.types.length; j++) {
+                if (dato.types[j].type.name === tipo) {
+                    crearCardPokemon(dato);
+                    btnNavegacion.style.display = "none";
+                    formSearchP.reset();
+                }
+            }
+        })
+    }
+}
+// ***********************************************************
+
+// Eventos 
 searchP.addEventListener("click", (event) => {
     event.preventDefault();
     console.log(datoP.value)
@@ -445,28 +487,6 @@ searchP.addEventListener("click", (event) => {
 
 })
 
-function filtradoTipos(limite, tipo) {
-    let pokemones = [];
-    for (let i = 1; i <= limite; i++) {
-        pokemones.push(traerPokemon(i).then(dato => {
-            return dato;
-        }))
-    }
-
-    for (let i = 0; i < pokemones.length; i++) {
-        pokemones[i].then((dato) => {
-            console.log(dato.types[0].type.name)
-            for (let j = 0; j < dato.types.length; j++) {
-                if (dato.types[j].type.name === tipo) {
-                    crearCardPokemon(dato);
-                    btnNavegacion.style.display = "none";
-                    formSearchP.reset();
-                }
-            }
-        })
-    }
-}
-
 resetP.addEventListener("click", (event) => {
     event.preventDefault();
     removeChildNodes(contenedorPokemons);
@@ -474,8 +494,7 @@ resetP.addEventListener("click", (event) => {
     btnNavegacion.style.display = "block";
 })
 
-
-{/* <div>
-    <p>Bomba fuego</p>
-    <p>Rayo solar</p>
-</div> */}
+// Invocaciones de funciones
+// ********************************************************
+grupoPokemons(offset, limit)
+// *********************************************************
